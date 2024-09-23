@@ -1,92 +1,117 @@
-const {Module, parsedJid, isAdmin, banUser, unbanUser, isBanned, setMessage, getMessage, delMessage, getStatus, toggleStatus, getAntilink, updateAntilink, createAntilink} = require("../lib/");
-
-Module(
-	{
-		pattern: "antilink",
-		fromMe: true,
-		desc: "Manage antilink settings",
-		type: "group"
-	},
-	async (message, match, m, client) => {
-		const groupId = message.jid;
-		const [action] = match.split(" ");
-		let antilink = (await getAntilink(groupId)) || (await createAntilink(groupId));
-		const responses = {
-			on: async () => {
-				await updateAntilink(groupId, {isEnabled: true});
-				await message.reply("Antilink has been enabled.");
-			},
-			off: async () => {
-				if (antilink) await updateAntilink(groupId, {isEnabled: false});
-				await message.reply(antilink ? "Antilink has been disabled." : "Antilink not set up.");
-			},
-			kick: async () => {
-				await updateAntilink(groupId, {action: "kick"});
-				await message.reply("Antilink action set to: kick");
-			},
-			all: async () => {
-				await updateAntilink(groupId, {action: "all"});
-				await message.reply("Antilink action set to: all");
-			},
-			get: async () => {
-				await message.reply(antilink ? `Antilink status:\nEnabled: ${antilink.isEnabled}\nAction: ${antilink.action}` : "Antilink not set up.");
-			},
-			default: async () => {
-				await message.reply(`Usage:\n.antilink on - Enable\n.antilink off - Disable\n.antilink kick - Kick\n.antilink all - All actions\n.antilink get - Status`);
-			}
-		};
-		await (responses[action] || responses.default)();
-	}
-);
-
-const manageMessages = async (message, match, type) => {
-	if (!message.isGroup) return;
-	const status = await getStatus(message.jid, type);
-	const msgType = type.charAt(0).toUpperCase() + type.slice(1);
-	const stat = status ? "on" : "off";
-	const actions = `- ${type} get\n- ${type} on\n- ${type} off\n- ${type} delete`;
-
-	if (!match) return await message.reply(`${msgType} manager\nGroup: ${(await message.client.groupMetadata(message.jid)).subject}\nStatus: ${stat}\nAvailable Actions:\n${actions}`);
-
-	const messageAction = {
-		get: async () => {
-			const msg = await getMessage(message.jid, type);
-			await message.reply(msg ? msg.message : `_No ${type} message set_`);
-		},
-		on: async () => {
-			if (!status) await toggleStatus(message.jid);
-			await message.reply(status ? `_Already enabled_` : `_${msgType} enabled_`);
-		},
-		off: async () => {
-			if (status) await toggleStatus(message.jid);
-			await message.reply(status ? `_${msgType} disabled_` : `_Already disabled_`);
-		},
-		delete: async () => {
-			await delMessage(message.jid, type);
-			await message.reply(`_${msgType} deleted_`);
-		}
-	};
-
-	(await (messageAction[match] || setMessage(message.jid, type, match))) && (await message.reply(`_${msgType} set successfully_`));
-};
+const {Module, parsedJid, isAdmin, banUser, unbanUser, isBanned, setMessage, getMessage, delMessage, getStatus, toggleStatus} = require("../lib/");
 
 Module(
 	{
 		pattern: "welcome",
 		fromMe: true,
-		desc: "description",
+		desc: "Manage welcome messages",
 		type: "group"
 	},
-	(message, match, m, client) => manageMessages(message, match, "welcome")
+	async (message, match, m, client) => {
+		if (!message.isGroup) return;
+
+		const getStatus = async () => {
+			const status = await getStatus(message.jid, "welcome");
+			const stat = status ? "on" : "off";
+			const actions = "- welcome get\n- welcome on\n- welcome off\n- welcome delete";
+			return await message.reply(`Welcome message manager\nGroup: ${(await message.client.groupMetadata(message.jid)).subject}\nStatus: ${stat}\nAvailable Actions:\n${actions}`);
+		};
+
+		const getMessage = async () => {
+			const msg = await getMessage(message.jid, "welcome");
+			return await message.reply(msg ? msg.message : "_No welcome message set_");
+		};
+
+		const turnOn = async () => {
+			const status = await getStatus(message.jid, "welcome");
+			if (!status) await toggleStatus(message.jid);
+			return await message.reply(status ? "_Already enabled_" : "_Welcome message enabled_");
+		};
+
+		const turnOff = async () => {
+			const status = await getStatus(message.jid, "welcome");
+			if (status) await toggleStatus(message.jid);
+			return await message.reply(status ? "_Welcome message disabled_" : "_Already disabled_");
+		};
+
+		const deleteMessage = async () => {
+			await delMessage(message.jid, "welcome");
+			return await message.reply("_Welcome message deleted_");
+		};
+
+		const setNewMessage = async newMessage => {
+			await setMessage(message.jid, "welcome", newMessage);
+			return await message.reply("_Welcome message set successfully_");
+		};
+
+		if (!match) return await getStatus();
+
+		const actions = {
+			get: getMessage,
+			on: turnOn,
+			off: turnOff,
+			delete: deleteMessage
+		};
+
+		return await (actions[match] || (() => setNewMessage(match)))();
+	}
 );
+
 Module(
 	{
 		pattern: "goodbye",
 		fromMe: true,
-		desc: "description",
+		desc: "Manage goodbye messages",
 		type: "group"
 	},
-	(message, match, m, client) => manageMessages(message, match, "goodbye")
+	async (message, match, m, client) => {
+		if (!message.isGroup) return;
+
+		const getStatus = async () => {
+			const status = await getStatus(message.jid, "goodbye");
+			const stat = status ? "on" : "off";
+			const actions = "- goodbye get\n- goodbye on\n- goodbye off\n- goodbye delete";
+			return await message.reply(`Goodbye message manager\nGroup: ${(await message.client.groupMetadata(message.jid)).subject}\nStatus: ${stat}\nAvailable Actions:\n${actions}`);
+		};
+
+		const getMessage = async () => {
+			const msg = await getMessage(message.jid, "goodbye");
+			return await message.reply(msg ? msg.message : "_No goodbye message set_");
+		};
+
+		const turnOn = async () => {
+			const status = await getStatus(message.jid, "goodbye");
+			if (!status) await toggleStatus(message.jid);
+			return await message.reply(status ? "_Already enabled_" : "_Goodbye message enabled_");
+		};
+
+		const turnOff = async () => {
+			const status = await getStatus(message.jid, "goodbye");
+			if (status) await toggleStatus(message.jid);
+			return await message.reply(status ? "_Goodbye message disabled_" : "_Already disabled_");
+		};
+
+		const deleteMessage = async () => {
+			await delMessage(message.jid, "goodbye");
+			return await message.reply("_Goodbye message deleted_");
+		};
+
+		const setNewMessage = async newMessage => {
+			await setMessage(message.jid, "goodbye", newMessage);
+			return await message.reply("_Goodbye message set successfully_");
+		};
+
+		if (!match) return await getStatus();
+
+		const actions = {
+			get: getMessage,
+			on: turnOn,
+			off: turnOff,
+			delete: deleteMessage
+		};
+
+		return await (actions[match] || (() => setNewMessage(match)))();
+	}
 );
 
 Module(
@@ -585,73 +610,5 @@ Module(
 		const replyMessage = `*Group Invite Link*\n\n` + `*Group:* ${groupMetadata.subject}\n` + `*Link:* ${inviteLink}\n`;
 
 		return await message.send(replyMessage);
-	}
-);
-
-const groupSettings = new Map();
-
-function getGroupSettings(jid) {
-	if (!groupSettings.has(jid)) {
-		groupSettings.set(jid, {antiPromote: false, antiDemote: false});
-	}
-	return groupSettings.get(jid);
-}
-
-Module(
-	{
-		pattern: "antipromote",
-		fromMe: true,
-		desc: "Toggle anti-promote feature for the group",
-		type: "group"
-	},
-	async (message, match, m, client) => {
-		if (!message.isGroup) return await message.sendReply("This command can only be used in groups.");
-
-		const groupSettings = getGroupSettings(message.jid);
-		groupSettings.antiPromote = !groupSettings.antiPromote;
-
-		await message.sendReply(`Anti-promote has been ${groupSettings.antiPromote ? "enabled" : "disabled"} for this group.`);
-	}
-);
-
-Module(
-	{
-		pattern: "antidemote",
-		fromMe: true,
-		desc: "Toggle anti-demote feature for the group",
-		type: "group"
-	},
-	async (message, match, m, client) => {
-		if (!message.isGroup) return await message.sendReply("This command can only be used in groups.");
-
-		const groupSettings = getGroupSettings(message.jid);
-		groupSettings.antiDemote = !groupSettings.antiDemote;
-
-		await message.sendReply(`Anti-demote has been ${groupSettings.antiDemote ? "enabled" : "disabled"} for this group.`);
-	}
-);
-
-Module(
-	{
-		on: "group_update"
-	},
-	async (message, match, m, client) => {
-		if (!message.isGroup) return;
-
-		const groupSettings = getGroupSettings(message.jid);
-
-		if (message.update === "promote" && groupSettings.antiPromote) {
-			const participants = message.participants;
-			for (let jid of participants) {
-				await client.groupParticipantsUpdate(message.jid, [jid], "demote");
-			}
-			await client.sendMessage(message.jid, {text: "Anti-promote activated. Promotion reverted."});
-		} else if (message.update === "demote" && groupSettings.antiDemote) {
-			const participants = message.participants;
-			for (let jid of participants) {
-				await client.groupParticipantsUpdate(message.jid, [jid], "promote");
-			}
-			await client.sendMessage(message.jid, {text: "Anti-demote activated. Demotion reverted."});
-		}
 	}
 );

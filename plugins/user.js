@@ -1,8 +1,5 @@
-const {Module, parsedJid, mode} = require("../lib");
-const {WarnDB} = require("../lib/db");
+const {Module, parsedJid, mode, getFilter, setFilter, deleteFilter, searchFilters, getWarns, saveWarn, resetWarn, removeLastWarn} = require("../lib");
 const {WARN_COUNT, BOT_INFO, SUDO} = require("../config");
-const {getWarns, saveWarn, resetWarn, removeLastWarn} = WarnDB;
-const {getFilter, setFilter, deleteFilter, searchFilters} = require("../lib/db/filters");
 
 Module(
 	{
@@ -248,27 +245,12 @@ Module(
 
 Module(
 	{
-		pattern: "owner",
-		fromMe: mode,
-		desc: "Send Bot Owner's Contact",
+		pattern: "smsg",
+		fromMe: true,
+		desc: "Saves WhatsApp Messages",
 		type: "user"
 	},
-	async message => {
-		const vcard =
-			"BEGIN:VCARD\n" + // metadata of the contact card
-			"VERSION:3.0\n" +
-			"FN:" +
-			BOT_INFO.split(";")[1] +
-			"\n" + // full name
-			"ORG:Ashoka Uni;\n" + // the organization of the contact
-			"TEL;type=CELL;type=VOICE;waid=" +
-			SUDO +
-			": +91 12345 67890\n" + // WhatsApp ID + phone number
-			"END:VCARD";
-
-		await message.sendMessage(message.jid, {
-			text: "Bot Owner",
-			vcard
-		});
+	async (message, match, m, client) => {
+		await message.forward(message.user, m.quoted, {quoted: message});
 	}
 );

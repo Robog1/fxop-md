@@ -1,6 +1,4 @@
-const fileType = require("file-type");
-const {Module, mode, serialize, parsedJid} = require("../lib");
-const {loadMessage, getName} = require("../lib/db/StoreDb");
+const {Module, mode, serialize, parsedJid, loadMessage, getName} = require("../lib");
 const {DELETED_LOG_CHAT, DELETED_LOG} = require("../config");
 
 Module(
@@ -182,19 +180,6 @@ Module(
 		if (!msg.quoted) return await message.reply("No quoted message found");
 
 		await message.forward(message.jid, msg.quoted.message);
-	}
-);
-
-Module(
-	{
-		pattern: "smsg",
-		fromMe: true,
-		desc: "Saves WhatsApp Messages",
-		type: "whatsappp"
-	},
-	async (message, match, m, client) => {
-		if (!message.reply_message?.image && !message.reply_message.video && !message.reply_message.audio) return await message.sendReply("_Reply A Message to Save_");
-		await message.forward(message.user, m.quoted.message, {quoted: message});
 	}
 );
 
@@ -396,7 +381,7 @@ Module(
 		pattern: "getprivacy ?(.*)",
 		fromMe: true,
 		desc: "get your privacy settings",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		const {readreceipts, profile, status, online, last, groupadd, calladd} = await message.client.fetchPrivacySettings(true);
@@ -411,7 +396,7 @@ Module(
 		pattern: "lastseen ?(.*)",
 		fromMe: true,
 		desc: "to change lastseen privacy",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change last seen privacy settings_`);
@@ -427,7 +412,7 @@ Module(
 		pattern: "online ?(.*)",
 		fromMe: true,
 		desc: "to change online privacy",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *online*  privacy settings_`);
@@ -443,7 +428,7 @@ Module(
 		pattern: "mypp ?(.*)",
 		fromMe: true,
 		desc: "privacy setting profile picture",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *profile picture*  privacy settings_`);
@@ -459,7 +444,7 @@ Module(
 		pattern: "mystatus ?(.*)",
 		fromMe: true,
 		desc: "privacy for my status",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *status*  privacy settings_`);
@@ -475,7 +460,7 @@ Module(
 		pattern: "read ?(.*)",
 		fromMe: true,
 		desc: "privacy for read message",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *read and receipts message*  privacy settings_`);
@@ -491,7 +476,7 @@ Module(
 		pattern: "groupadd ?(.*)",
 		fromMe: true,
 		desc: "privacy for group add",
-		type: "whatsapp"
+		type: "privacy"
 	},
 	async (message, match, m, client) => {
 		if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *group add*  privacy settings_`);
