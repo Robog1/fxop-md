@@ -513,20 +513,29 @@ Module(
 
 		try {
 			let result;
-			const func = new Function("message", "match", "m", "client"`return (async () => { return ${evalCmd}; })();`);
+			// Pass the necessary parameters into the eval function
+			const func = new Function("message", "match", "m", "client", "msg", "ms", `return (async () => { ${evalCmd} })();`);
 
+			// Execute the dynamically created function
 			result = await func(message, match, m, client, msg, ms);
+
+			// Handle specific cases where result is undefined or empty
 			if (result === undefined) {
 				if (evalCmd === "message") result = message;
 				if (evalCmd === "client") result = client;
 				if (evalCmd === "m") result = m;
 			}
-			if (typeof result === "object") {
+
+			// Properly inspect objects and functions
+			if (typeof result === "object" && result !== null) {
 				result = require("util").inspect(result, { depth: 2 });
+			} else if (typeof result === "function") {
+				result = result.toString();
 			}
 
 			await message.reply(result?.toString() || "No result");
 		} catch (error) {
+			// Send the error message back
 			await message.reply(`Error: ${error.message}`);
 		}
 	},
