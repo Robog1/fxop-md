@@ -1,8 +1,8 @@
 const got = require("got-cjs");
 const Heroku = require("heroku-client");
 const Config = require("../config");
-const { Module } = require("../lib");
-const heroku = new Heroku({ token: Config.HEROKU_API_KEY });
+const {Module} = require("../lib");
+const heroku = new Heroku({token: Config.HEROKU_API_KEY});
 const baseURI = "/apps/" + Config.HEROKU_APP_NAME;
 
 function secondsToHms(seconds) {
@@ -18,21 +18,21 @@ if (Config.HEROKU_API_KEY && Config.HEROKU_APP_NAME) {
 		{
 			pattern: "reboot",
 			desc: "Restart Dyno",
-			type: "heroku",
+			type: "heroku"
 		},
 		async (message, match) => {
 			await message.send(`_Restarting_`);
 			await heroku.delete(baseURI + "/dynos").catch(async error => {
 				await message.send(`HEROKU : ${error.body.message}`);
 			});
-		},
+		}
 	);
 
 	Module(
 		{
 			pattern: "offdyno",
 			desc: "Dyno off",
-			type: "heroku",
+			type: "heroku"
 		},
 		async (message, match) => {
 			await heroku
@@ -41,21 +41,21 @@ if (Config.HEROKU_API_KEY && Config.HEROKU_APP_NAME) {
 					await message.send(`_Shutting down._`);
 					await heroku.patch(baseURI + "/formation/" + formation[0].id, {
 						body: {
-							quantity: 0,
-						},
+							quantity: 0
+						}
 					});
 				})
 				.catch(async error => {
 					await message.send(`HEROKU : ${error.body.message}`);
 				});
-		},
+		}
 	);
 
 	Module(
 		{
 			pattern: "dyno",
 			desc: "Show Quota info",
-			type: "heroku",
+			type: "heroku"
 		},
 		async (message, match) => {
 			try {
@@ -65,10 +65,10 @@ if (Config.HEROKU_API_KEY && Config.HEROKU_APP_NAME) {
 						const url = `https://api.heroku.com/accounts/${account.id}/actions/get-quota`;
 						const headers = {
 							"User-Agent": "Chrome/80.0.3987.149 Mobile Safari/537.36",
-							"Authorization": "Bearer " + Config.HEROKU_API_KEY,
-							"Accept": "application/vnd.heroku+json; version=3.account-quotas",
+							Authorization: "Bearer " + Config.HEROKU_API_KEY,
+							Accept: "application/vnd.heroku+json; version=3.account-quotas"
 						};
-						const res = await got(url, { headers });
+						const res = await got(url, {headers});
 						const resp = JSON.parse(res.body);
 						const total_quota = Math.floor(resp.account_quota);
 						const quota_used = Math.floor(resp.quota_used);
@@ -84,10 +84,10 @@ Remaining   : ${secondsToHms(remaining)}`;
 			} catch (error) {
 				await message.send(error);
 			}
-		},
+		}
 	);
 }
 
 module.exports = {
-	secondsToHms,
+	secondsToHms
 };

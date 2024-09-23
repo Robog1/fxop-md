@@ -6,7 +6,8 @@
 	"scripts": {
 		"start": "pm2 start . --attach --name fx-md",
 		"stop": "pm2 stop fx-md",
-		"dev": "node index.js"
+		"dev": "node index.js",
+		"format": "prettier --write ."
 	},
 	"author": "FXastro",
 	"dependencies": {
@@ -45,5 +46,8 @@
 		"socket.io-client": "^4.7.5",
 		"sqlite3": "^5.1.7",
 		"systeminformation": "*"
+	},
+	"devDependencies": {
+		"prettier": "^3.3.3"
 	}
 }

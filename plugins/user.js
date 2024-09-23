@@ -1,15 +1,15 @@
-const { Module, parsedJid, mode } = require("../lib");
-const { WarnDB } = require("../lib/db");
-const { WARN_COUNT, BOT_INFO, SUDO } = require("../config");
-const { getWarns, saveWarn, resetWarn, removeLastWarn } = WarnDB;
-const { getFilter, setFilter, deleteFilter, searchFilters } = require("../lib/db/filters");
+const {Module, parsedJid, mode} = require("../lib");
+const {WarnDB} = require("../lib/db");
+const {WARN_COUNT, BOT_INFO, SUDO} = require("../config");
+const {getWarns, saveWarn, resetWarn, removeLastWarn} = WarnDB;
+const {getFilter, setFilter, deleteFilter, searchFilters} = require("../lib/db/filters");
 
 Module(
 	{
 		pattern: "warn",
 		fromMe: true,
 		desc: "Warn a user",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		const userId = message.mention[0] || message.reply_message?.jid;
@@ -19,14 +19,14 @@ Module(
 		reason = reason || "Reason not provided";
 
 		const warnInfo = await saveWarn(userId, reason);
-		await message.reply(`_User @${userId.split("@")[0]} warned._ \n_Warn Count: ${warnInfo.warnCount}._ \n_Reason: ${reason}_`, { mentions: [userId] });
+		await message.reply(`_User @${userId.split("@")[0]} warned._ \n_Warn Count: ${warnInfo.warnCount}._ \n_Reason: ${reason}_`, {mentions: [userId]});
 
 		if (warnInfo.warnCount >= WARN_COUNT) {
 			const jid = parsedJid(userId);
 			await message.send("Warn limit exceeded. Kicking user.");
 			return await message.client.groupParticipantsUpdate(message.jid, jid, "remove");
 		}
-	},
+	}
 );
 
 Module(
@@ -34,16 +34,16 @@ Module(
 		pattern: "rwarn",
 		fromMe: true,
 		desc: "Reset warnings for a user",
-		type: "user",
+		type: "user"
 	},
 	async message => {
 		const userId = message.mention[0] || message.reply_message?.jid;
 		if (!userId) return message.reply("_Mention or reply to someone_");
 		await resetWarn(userId);
 		return await message.reply(`_Warnings for @${userId.split("@")[0]} reset_`, {
-			mentions: [userId],
+			mentions: [userId]
 		});
-	},
+	}
 );
 
 Module(
@@ -51,7 +51,7 @@ Module(
 		pattern: "delwarn",
 		fromMe: true,
 		desc: "Remove the last warning for a user",
-		type: "user",
+		type: "user"
 	},
 	async message => {
 		const userId = message.mention[0] || message.reply_message?.jid;
@@ -59,13 +59,13 @@ Module(
 
 		const updatedWarn = await removeLastWarn(userId);
 		if (updatedWarn) {
-			return await message.reply(`_Last warning removed for @${userId.split("@")[0]}._ \n_Current Warn Count: ${updatedWarn.warnCount}._`, { mentions: [userId] });
+			return await message.reply(`_Last warning removed for @${userId.split("@")[0]}._ \n_Current Warn Count: ${updatedWarn.warnCount}._`, {mentions: [userId]});
 		} else {
 			return await message.reply(`_No warnings found for @${userId.split("@")[0]}._`, {
-				mentions: [userId],
+				mentions: [userId]
 			});
 		}
-	},
+	}
 );
 
 Module(
@@ -73,7 +73,7 @@ Module(
 		pattern: "getwarns",
 		fromMe: true,
 		desc: "Show warnings for a user",
-		type: "user",
+		type: "user"
 	},
 	async message => {
 		const userId = message.mention[0] || message.reply_message?.jid;
@@ -82,13 +82,13 @@ Module(
 		const warnInfo = await getWarns(userId);
 		if (warnInfo) {
 			const warningList = warnInfo.reasons.map((reason, index) => `${index + 1}. ${reason}`).join("\n");
-			return await message.reply(`_Warnings for @${userId.split("@")[0]}:_ \n_Total Warns: ${warnInfo.warnCount}_ \n\n${warningList}`, { mentions: [userId] });
+			return await message.reply(`_Warnings for @${userId.split("@")[0]}:_ \n_Total Warns: ${warnInfo.warnCount}_ \n\n${warningList}`, {mentions: [userId]});
 		} else {
 			return await message.reply(`_No warnings found for @${userId.split("@")[0]}._`, {
-				mentions: [userId],
+				mentions: [userId]
 			});
 		}
-	},
+	}
 );
 
 Module(
@@ -96,7 +96,7 @@ Module(
 		pattern: "filter",
 		fromMe: true,
 		desc: "Adds or manages filters. Use '.filter' to view, '.filter keyword:response' to add/update.",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		let [keyword, ...responseParts] = match.split(":");
@@ -128,7 +128,7 @@ Module(
 			await setFilter(message.jid, keyword, response, regex, caseSensitive, exactMatch, message.pushName || "Anonymous");
 			await message.reply(`_Successfully set filter for ${keyword}_`);
 		}
-	},
+	}
 );
 
 Module(
@@ -136,7 +136,7 @@ Module(
 		pattern: "fstop",
 		fromMe: true,
 		desc: "Stops a previously added filter.",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		if (!match) return await message.reply("\n*Example:* ```.fstop hello```");
@@ -147,7 +147,7 @@ Module(
 		} else {
 			await message.reply(`_Filter ${match} deleted_`);
 		}
-	},
+	}
 );
 
 Module(
@@ -155,7 +155,7 @@ Module(
 		pattern: "gfilter",
 		fromMe: true,
 		desc: "Gets details of a specific filter.",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		if (!match) return await message.reply("\n*Example:* ```.getfilter hello```");
@@ -175,7 +175,7 @@ Module(
 			response += `• Created At: ${filterInfo.createdAt}`;
 			await message.reply(response);
 		}
-	},
+	}
 );
 
 Module(
@@ -183,7 +183,7 @@ Module(
 		pattern: "sfilter",
 		fromMe: true,
 		desc: "Searches for filters containing a specific term.",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		if (!match) return await message.reply("\n*Example:* ```.searchfilter hello```");
@@ -200,7 +200,7 @@ Module(
 			});
 			await message.reply(response);
 		}
-	},
+	}
 );
 
 Module(
@@ -208,20 +208,20 @@ Module(
 		pattern: "fcount",
 		fromMe: true,
 		desc: "Counts the number of filters in the current chat.",
-		type: "user",
+		type: "user"
 	},
 	async (message, match) => {
 		const filters = await getFilter(message.jid);
 		const count = filters ? filters.length : 0;
 		await message.reply(`There are ${count} filter(s) in this chat.`);
-	},
+	}
 );
 
 Module(
 	{
 		on: "text",
 		fromMe: false,
-		dontAddCommandList: true,
+		dontAddCommandList: true
 	},
 	async (message, match) => {
 		const activeFilters = await getFilter(message.jid);
@@ -239,11 +239,11 @@ Module(
 
 			if (pattern.test(match)) {
 				await message.reply(filter.dataValues.text, {
-					quoted: message,
+					quoted: message
 				});
 			}
 		});
-	},
+	}
 );
 
 Module(
@@ -251,7 +251,7 @@ Module(
 		pattern: "owner",
 		fromMe: mode,
 		desc: "Send Bot Owner's Contact",
-		type: "user",
+		type: "user"
 	},
 	async message => {
 		const vcard =
@@ -268,7 +268,7 @@ Module(
 
 		await message.sendMessage(message.jid, {
 			text: "Bot Owner",
-			vcard,
+			vcard
 		});
-	},
+	}
 );

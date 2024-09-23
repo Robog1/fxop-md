@@ -1,12 +1,12 @@
-const { Module, mode, getBuffer, getJson, getCpuInfo, runtime, commands, removePluginHandler, installPluginHandler, listPluginsHandler, tiny, PausedChats, localBuffer } = require("../lib");
+const {Module, mode, getBuffer, getJson, getCpuInfo, runtime, commands, removePluginHandler, installPluginHandler, listPluginsHandler, tiny, PausedChats, localBuffer} = require("../lib");
 const os = require("os");
 const path = require("path");
 const util = require("util");
 const axios = require("axios");
 const simplegit = require("simple-git");
 const git = simplegit();
-const { TIME_ZONE, BRANCH, BOT_INFO } = require("../config");
-const { exec, execSync } = require("child_process");
+const {TIME_ZONE, BRANCH, BOT_INFO} = require("../config");
+const {exec, execSync} = require("child_process");
 var branch = BRANCH;
 const long = String.fromCharCode(8206);
 const readmore = long.repeat(4001);
@@ -37,7 +37,7 @@ Module(
 		pattern: "ping",
 		fromMe: mode,
 		desc: "Bot response in milliseconds.",
-		type: "system",
+		type: "system"
 	},
 	async message => {
 		const start = new Date().getTime();
@@ -45,7 +45,7 @@ Module(
 		const end = new Date().getTime();
 		const responseTime = (end - start) / 1000;
 		await msg.edit(`\`\`\`Responce Rate ${responseTime} secs\`\`\``);
-	},
+	}
 );
 
 Module(
@@ -53,7 +53,7 @@ Module(
 		pattern: "restart",
 		fromMe: true,
 		desc: "Restarts Bot",
-		type: "system",
+		type: "system"
 	},
 	async (msg, match, client) => {
 		await msg.sendReply("*_Restarting..._*");
@@ -69,19 +69,19 @@ Module(
 			console.log(`Bot restarted: ${stdout}`);
 		});
 		process.exit(1); // Exit the current process to allow restart
-	},
+	}
 );
 Module(
 	{
 		pattern: "shutdown",
 		fromMe: true,
 		desc: "Stops the bot",
-		type: "system",
+		type: "system"
 	},
 	async (message, match) => {
 		await message.sendReply("*_Shutting Down..._*");
 		process.exit(0);
-	},
+	}
 );
 
 Module(
@@ -89,12 +89,12 @@ Module(
 		pattern: "enable ?(.*)",
 		fromMe: true,
 		desc: "Disables the bot",
-		type: "system",
+		type: "system"
 	},
 	async message => {
 		await PausedChats.savePausedChat(message.key.remoteJid);
 		await message.reply("_Bot Disabled in this Chat_");
-	},
+	}
 );
 
 Module(
@@ -102,17 +102,17 @@ Module(
 		pattern: "disable ?(.*)",
 		fromMe: true,
 		desc: "Enables the bot",
-		type: "system",
+		type: "system"
 	},
 	async message => {
-		const pausedChat = await PausedChats.PausedChats.findOne({ where: { chatId: message.key.remoteJid } });
+		const pausedChat = await PausedChats.PausedChats.findOne({where: {chatId: message.key.remoteJid}});
 		if (pausedChat) {
 			await pausedChat.destroy();
 			await message.reply("_Bot Enabled in this Chat_");
 		} else {
 			await message.reply("_Bot wasn't disabled_");
 		}
-	},
+	}
 );
 
 Module(
@@ -120,11 +120,11 @@ Module(
 		pattern: "runtime",
 		fromMe: true,
 		desc: "Check uptime of bot",
-		type: "system",
+		type: "system"
 	},
 	async (message, match) => {
 		message.reply(`*${BOT_INFO.split(";")[1]} ${runtime(process.uptime())}*`);
-	},
+	}
 );
 
 Module(
@@ -132,52 +132,52 @@ Module(
 		pattern: "logout",
 		fromMe: true,
 		desc: "logouts of out the bot",
-		type: "system",
+		type: "system"
 	},
 	async (message, match, client) => {
 		await message.sendReply("_Logged Out!_");
 		await client.logout();
 		return await exec(require("../package.json").scripts.stop);
-	},
+	}
 );
 Module(
 	{
 		pattern: "cpu",
 		fromMe: mode,
 		desc: "Returns CPU Info",
-		type: "system",
+		type: "system"
 	},
 	async message => {
 		const cpuInfo = await getCpuInfo();
 		await message.send(cpuInfo);
-	},
+	}
 );
 Module(
 	{
 		pattern: "install",
 		fromMe: true,
 		desc: "Installs External plugins",
-		type: "system",
+		type: "system"
 	},
-	installPluginHandler,
+	installPluginHandler
 );
 Module(
 	{
 		pattern: "plugin",
 		fromMe: true,
 		desc: "Plugin list",
-		type: "system",
+		type: "system"
 	},
-	listPluginsHandler,
+	listPluginsHandler
 );
 Module(
 	{
 		pattern: "remove",
 		fromMe: true,
 		desc: "Remove external plugins",
-		type: "system",
+		type: "system"
 	},
-	removePluginHandler,
+	removePluginHandler
 );
 
 Module(
@@ -185,7 +185,7 @@ Module(
 		pattern: "menu",
 		fromMe: mode,
 		description: "Show All Commands",
-		dontAddCommandList: true,
+		dontAddCommandList: true
 	},
 	async (message, query) => {
 		if (query) {
@@ -198,9 +198,9 @@ Description: ${plugin.description || "No description available"}\`\`\``);
 			}
 			return message.reply("Command not found.");
 		} else {
-			const { prefix } = message;
-			const [currentDate, currentTime] = new Date().toLocaleString("en-IN", { timeZone: TIME_ZONE }).split(",");
-			const currentDay = new Date().toLocaleDateString("en-US", { weekday: "long" });
+			const {prefix} = message;
+			const [currentDate, currentTime] = new Date().toLocaleString("en-IN", {timeZone: TIME_ZONE}).split(",");
+			const currentDay = new Date().toLocaleDateString("en-US", {weekday: "long"});
 			let menuText = `\`\`\`╭─ ғxᴏᴘʀɪsᴀ ᴍᴅ ───
 │ prefix: ${prefix}
 │ user: ${message.pushName}
@@ -221,7 +221,7 @@ Description: ${plugin.description || "No description available"}\`\`\``);
 				if (command.pattern && !command.dontAddCommandList) {
 					const commandName = command.pattern.toString().split(/\W+/)[2];
 					const category = command.type ? command.type.toLowerCase() : "misc";
-					commandList.push({ name: commandName, category });
+					commandList.push({name: commandName, category});
 					categories.add(category);
 				}
 			});
@@ -232,7 +232,7 @@ Description: ${plugin.description || "No description available"}\`\`\``);
 				.forEach(category => {
 					menuText += `\`\`\`\n╭── ${category} ────`;
 					const categoryCommands = commandList.filter(cmd => cmd.category === category);
-					categoryCommands.forEach(({ name }) => {
+					categoryCommands.forEach(({name}) => {
 						menuText += `\n│ ${name}`;
 					});
 					menuText += `\n╰──────────────\n\`\`\``;
@@ -240,13 +240,13 @@ Description: ${plugin.description || "No description available"}\`\`\``);
 
 			try {
 				const media = await getBuffer(BOT_INFO.split(";")[2]);
-				return await message.send(media, { caption: tiny(menuText.trim()) });
+				return await message.send(media, {caption: tiny(menuText.trim())});
 			} catch (error) {
 				const defaultImg = await localBuffer(path.join(__dirname, "../lib/media/images/thumb.jpg"));
-				return await message.send(defaultImg, { caption: tiny(menuText.trim()) });
+				return await message.send(defaultImg, {caption: tiny(menuText.trim())});
 			}
 		}
-	},
+	}
 );
 
 Module(
@@ -254,9 +254,9 @@ Module(
 		pattern: "list",
 		fromMe: mode,
 		description: "Show All Commands",
-		dontAddCommandList: true,
+		dontAddCommandList: true
 	},
-	async (message, query, { prefix }) => {
+	async (message, query, {prefix}) => {
 		let commandListText = "\t\t```Command List```\n";
 		const commandList = [];
 
@@ -264,18 +264,18 @@ Module(
 			if (command.pattern && !command.dontAddCommandList) {
 				const commandName = command.pattern.toString().split(/\W+/)[2]; // Changed this line
 				const description = command.desc || command.info || "No description available";
-				commandList.push({ name: commandName, description });
+				commandList.push({name: commandName, description});
 			}
 		});
 
 		commandList.sort((a, b) => a.name.localeCompare(b.name));
-		commandList.forEach(({ name, description }, index) => {
+		commandList.forEach(({name, description}, index) => {
 			commandListText += `\`\`\`${index + 1} ${name.trim()}\`\`\`\n`;
 			commandListText += `Use: \`\`\`${description}\`\`\`\n\n`;
 		});
 
 		return await message.send(commandListText);
-	},
+	}
 );
 
 Module(
@@ -283,11 +283,11 @@ Module(
 		pattern: "patch ?(.*)",
 		fromMe: true,
 		desc: "Run bot patching",
-		type: "system",
+		type: "system"
 	},
 	async m => {
 		await m.reply("_Feature UnderDevelopment!_");
-	},
+	}
 );
 
 Module(
@@ -295,14 +295,14 @@ Module(
 		pattern: "fxop ?(.*)",
 		fromMe: mode,
 		desc: "Get Active Fxop Users",
-		type: "system",
+		type: "system"
 	},
 	async m => {
 		const msg = await m.reply("Fetching Users");
 		const data = await getJson("https://socket-counter.vercel.app/active-users");
 		const users = data.activeUsers;
 		return await msg.edit(`*_${users} active Users on FX-BOT_*`);
-	},
+	}
 );
 
 Module(
@@ -310,7 +310,7 @@ Module(
 		pattern: "checkupdates ?(.*)",
 		fromMe: true,
 		desc: "Check remote for Updates",
-		type: "system",
+		type: "system"
 	},
 	async (message, match, m, client) => {
 		try {
@@ -326,7 +326,7 @@ Module(
 		} catch (error) {
 			await message.send("Failed to check for updates.");
 		}
-	},
+	}
 );
 
 Module(
@@ -334,7 +334,7 @@ Module(
 		pattern: "update",
 		fromMe: true,
 		desc: "Update the bot and redeploy",
-		type: "system",
+		type: "system"
 	},
 	async (message, match) => {
 		const prefix = message.prefix;
@@ -384,7 +384,7 @@ Module(
 				await message.send(changes);
 			}
 		}
-	},
+	}
 );
 
 async function updatedDependencies() {
@@ -465,24 +465,24 @@ async function redeployKoyeb(message) {
 					service_id: KOYEB_SERVICE_ID,
 					definition: {
 						name: KOYEB_APP_NAME,
-						routes: [{ path: "/" }],
-						ports: [{ port: 80 }],
-						env: [{ key: "GIT_BRANCH", value: "refs/heads/master" }],
+						routes: [{path: "/"}],
+						ports: [{port: 80}],
+						env: [{key: "GIT_BRANCH", value: "refs/heads/master"}],
 						regions: ["fra"],
 						instance_types: ["nano"],
-						scalings: [{ min: 1, max: 1 }],
+						scalings: [{min: 1, max: 1}],
 						docker: {
-							image_name: "koyeb/demo",
-						},
-					},
-				},
+							image_name: "koyeb/demo"
+						}
+					}
+				}
 			},
 			{
 				headers: {
-					"Authorization": `Bearer ${KOYEB_API_KEY}`,
-					"Content-Type": "application/json",
-				},
-			},
+					Authorization: `Bearer ${KOYEB_API_KEY}`,
+					"Content-Type": "application/json"
+				}
+			}
 		);
 
 		if (response.status === 201) {
@@ -502,7 +502,7 @@ Module(
 	{
 		on: "text",
 		fromMe: true,
-		dontAddCommandList: true,
+		dontAddCommandList: true
 	},
 	async (message, match, m, client, msg, ms) => {
 		const content = message.text;
@@ -523,7 +523,7 @@ Module(
 			if (typeof result === "function") {
 				result = result.toString();
 			} else if (typeof result === "object" && result !== null) {
-				result = require("util").inspect(result, { depth: 2 });
+				result = require("util").inspect(result, {depth: 2});
 			} else {
 				result = result?.toString();
 			}
@@ -532,5 +532,5 @@ Module(
 		} catch (error) {
 			await message.reply(`Error: ${error.message}`);
 		}
-	},
+	}
 );

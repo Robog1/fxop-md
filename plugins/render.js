@@ -1,4 +1,4 @@
-const { Module } = require("../lib/");
+const {Module} = require("../lib/");
 const pm2 = require("pm2");
 const config = require("../config");
 
@@ -11,7 +11,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			pattern: "setvar ?(.*)",
 			fromMe: true,
 			desc: "Set Render environment variables",
-			type: "render",
+			type: "render"
 		},
 		async (message, match, client) => {
 			if (!match) return await message.send("*Need Key and Value*\n_Example: setvar PREFIX:,_");
@@ -26,7 +26,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 					await message.send(`Error: ${error.message}`);
 				}
 			}
-		},
+		}
 	);
 
 	Module(
@@ -34,7 +34,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			pattern: "getvar ?(.*)",
 			fromMe: true,
 			desc: "Get Render environment variable",
-			type: "render",
+			type: "render"
 		},
 		async (message, match, client) => {
 			if (!match) return await message.send("*Need Variable Key*\n_Example: getvar PREFIX_");
@@ -48,7 +48,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			} catch (error) {
 				await message.send(`Error: ${error.message}`);
 			}
-		},
+		}
 	);
 
 	Module(
@@ -56,7 +56,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			pattern: "delvar ?(.*)",
 			fromMe: true,
 			desc: "Delete Render environment variable",
-			type: "render",
+			type: "render"
 		},
 		async (message, match, client) => {
 			if (!match) return await message.send("*Need Variable Key*\n_Example: delvar PREFIX_");
@@ -72,7 +72,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			} catch (error) {
 				await message.send(`Error: ${error.message}`);
 			}
-		},
+		}
 	);
 
 	Module(
@@ -80,7 +80,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			pattern: "allvar",
 			fromMe: true,
 			desc: "Get all Render environment variables",
-			type: "render",
+			type: "render"
 		},
 		async (message, match, client) => {
 			try {
@@ -94,7 +94,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			} catch (error) {
 				await message.send(`Error: ${error.message}`);
 			}
-		},
+		}
 	);
 
 	Module(
@@ -102,7 +102,7 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			pattern: "restart",
 			fromMe: true,
 			desc: "Restart Render app",
-			type: "render",
+			type: "render"
 		},
 		async (message, match, client) => {
 			try {
@@ -112,6 +112,6 @@ if (config.RENDER_NAME && config.RENDER_API) {
 			} catch (error) {
 				await message.send(`Error: ${error.message}`);
 			}
-		},
+		}
 	);
 }

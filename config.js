@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const {Sequelize} = require("sequelize");
 require("dotenv").config();
 
 const toBool = x => x?.toLowerCase() === "true";
@@ -13,10 +13,10 @@ const sequelizeOptions = {
 				ssl: true,
 				protocol: "postgres",
 				dialectOptions: {
-					ssl: { require: true, rejectUnauthorized: false },
-				},
-		  }
-		: { storage: DATABASE_URL }),
+					ssl: {require: true, rejectUnauthorized: false}
+				}
+			}
+		: {storage: DATABASE_URL})
 };
 
 module.exports = {
@@ -41,5 +41,5 @@ module.exports = {
 	TIME_ZONE: process.env.TZ,
 	BRANCH: "master",
 	WORK_TYPE: process.env.WORK_TYPE || "private",
-	VERSION: require("./package.json").version,
+	VERSION: require("./package.json").version
 };

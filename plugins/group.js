@@ -1,11 +1,11 @@
-const { Module, parsedJid, isAdmin, banUser, unbanUser, isBanned, setMessage, getMessage, delMessage, getStatus, toggleStatus, getAntilink, updateAntilink, createAntilink } = require("../lib/");
+const {Module, parsedJid, isAdmin, banUser, unbanUser, isBanned, setMessage, getMessage, delMessage, getStatus, toggleStatus, getAntilink, updateAntilink, createAntilink} = require("../lib/");
 
 Module(
 	{
 		pattern: "antilink",
 		fromMe: true,
 		desc: "Manage antilink settings",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		const groupId = message.jid;
@@ -13,19 +13,19 @@ Module(
 		let antilink = (await getAntilink(groupId)) || (await createAntilink(groupId));
 		const responses = {
 			on: async () => {
-				await updateAntilink(groupId, { isEnabled: true });
+				await updateAntilink(groupId, {isEnabled: true});
 				await message.reply("Antilink has been enabled.");
 			},
 			off: async () => {
-				if (antilink) await updateAntilink(groupId, { isEnabled: false });
+				if (antilink) await updateAntilink(groupId, {isEnabled: false});
 				await message.reply(antilink ? "Antilink has been disabled." : "Antilink not set up.");
 			},
 			kick: async () => {
-				await updateAntilink(groupId, { action: "kick" });
+				await updateAntilink(groupId, {action: "kick"});
 				await message.reply("Antilink action set to: kick");
 			},
 			all: async () => {
-				await updateAntilink(groupId, { action: "all" });
+				await updateAntilink(groupId, {action: "all"});
 				await message.reply("Antilink action set to: all");
 			},
 			get: async () => {
@@ -33,10 +33,10 @@ Module(
 			},
 			default: async () => {
 				await message.reply(`Usage:\n.antilink on - Enable\n.antilink off - Disable\n.antilink kick - Kick\n.antilink all - All actions\n.antilink get - Status`);
-			},
+			}
 		};
 		await (responses[action] || responses.default)();
-	},
+	}
 );
 
 const manageMessages = async (message, match, type) => {
@@ -64,7 +64,7 @@ const manageMessages = async (message, match, type) => {
 		delete: async () => {
 			await delMessage(message.jid, type);
 			await message.reply(`_${msgType} deleted_`);
-		},
+		}
 	};
 
 	(await (messageAction[match] || setMessage(message.jid, type, match))) && (await message.reply(`_${msgType} set successfully_`));
@@ -75,25 +75,25 @@ Module(
 		pattern: "welcome",
 		fromMe: true,
 		desc: "description",
-		type: "group",
+		type: "group"
 	},
-	(message, match, m, client) => manageMessages(message, match, "welcome"),
+	(message, match, m, client) => manageMessages(message, match, "welcome")
 );
 Module(
 	{
 		pattern: "goodbye",
 		fromMe: true,
 		desc: "description",
-		type: "group",
+		type: "group"
 	},
-	(message, match, m, client) => manageMessages(message, match, "goodbye"),
+	(message, match, m, client) => manageMessages(message, match, "goodbye")
 );
 
 Module(
 	{
 		on: "message",
 		fromMe: true,
-		dontAddCommandList: true,
+		dontAddCommandList: true
 	},
 	async (message, match, m, client) => {
 		if (!message.isBaileys) return;
@@ -102,7 +102,7 @@ Module(
 		await message.reply("_Bot is banned in this chat_");
 		const jid = parsedJid(message.participant);
 		return await client.groupParticipantsUpdate(message.jid, jid, "remove");
-	},
+	}
 );
 
 Module(
@@ -110,7 +110,7 @@ Module(
 		pattern: "antibot ?(.*)",
 		fromMe: true,
 		desc: "Turn antibot on or off",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -128,7 +128,7 @@ Module(
 			await unbanUser(chatid);
 			return await message.reply("_Antibot deactivated_");
 		}
-	},
+	}
 );
 
 Module(
@@ -136,7 +136,7 @@ Module(
 		pattern: "add",
 		fromMe: true,
 		desc: "add a person to group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -147,9 +147,9 @@ Module(
 		const jid = parsedJid(match);
 		await client.groupParticipantsUpdate(message.jid, jid, "add");
 		return await message.reply(`_@${jid[0].split("@")[0]} added_`, {
-			mentions: [jid],
+			mentions: [jid]
 		});
-	},
+	}
 );
 
 Module(
@@ -157,13 +157,13 @@ Module(
 		pattern: "leave",
 		fromMe: true,
 		desc: "Leaves a Group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
 		await message.reply("_Left_");
 		return await client.groupLeave(message.chat.id);
-	},
+	}
 );
 
 Module(
@@ -171,7 +171,7 @@ Module(
 		pattern: "kick",
 		fromMe: true,
 		desc: "kicks a person from group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -182,9 +182,9 @@ Module(
 		const jid = parsedJid(match);
 		await client.groupParticipantsUpdate(message.jid, jid, "remove");
 		return await message.reply(`_@${jid[0].split("@")[0]} kicked_`, {
-			mentions: [jid],
+			mentions: [jid]
 		});
-	},
+	}
 );
 
 Module(
@@ -192,7 +192,7 @@ Module(
 		pattern: "del",
 		fromMe: true,
 		desc: "deletes a message from participants in a group (bot must be admin)",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("This command can only be used in groups.");
@@ -207,10 +207,10 @@ Module(
 				remoteJid: message.jid,
 				fromMe: false,
 				id: message.reply_message.key.id,
-				participant: message.reply_message.key.participant,
-			},
+				participant: message.reply_message.key.participant
+			}
 		});
-	},
+	}
 );
 
 Module(
@@ -218,7 +218,7 @@ Module(
 		pattern: "vote",
 		fromMe: true,
 		desc: "Create a poll in the group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("This command can only be used in groups.");
@@ -232,10 +232,10 @@ Module(
 			poll: {
 				name: question,
 				values: options,
-				selectableCount: 1,
-			},
+				selectableCount: 1
+			}
 		});
-	},
+	}
 );
 
 Module(
@@ -243,7 +243,7 @@ Module(
 		pattern: "promote",
 		fromMe: true,
 		desc: "promote to admin",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -254,9 +254,9 @@ Module(
 		const jid = parsedJid(match);
 		await client.groupParticipantsUpdate(message.jid, jid, "promote");
 		return await message.send(`_@${jid[0].split("@")[0]} promoted as admin_`, {
-			mentions: [jid],
+			mentions: [jid]
 		});
-	},
+	}
 );
 
 Module(
@@ -264,7 +264,7 @@ Module(
 		pattern: "demote",
 		fromMe: true,
 		desc: "demote from admin",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -275,9 +275,9 @@ Module(
 		const jid = parsedJid(match);
 		await client.groupParticipantsUpdate(message.jid, jid, "demote");
 		return await message.send(`_@${jid[0].split("@")[0]} demoted from admin_`, {
-			mentions: [jid],
+			mentions: [jid]
 		});
-	},
+	}
 );
 
 Module(
@@ -285,14 +285,14 @@ Module(
 		pattern: "mute",
 		fromMe: true,
 		desc: "mute group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
 		if (!isAdmin(message.jid, message.user, message.client)) return await message.reply("_I'm not admin_");
 		await client.groupSettingUpdate(message.jid, "announcement");
 		return await message.send("_Group Muted_");
-	},
+	}
 );
 
 Module(
@@ -300,14 +300,14 @@ Module(
 		pattern: "unmute",
 		fromMe: true,
 		desc: "unmute group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
 		if (!isAdmin(message.jid, message.user, message.client)) return await message.reply("_I'm not admin_");
 		await client.groupSettingUpdate(message.jid, "not_announcement");
 		return await message.send("_Group Unmuted_");
-	},
+	}
 );
 
 Module(
@@ -315,11 +315,11 @@ Module(
 		pattern: "gjid",
 		fromMe: true,
 		desc: "gets jid of all group members",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
-		let { participants } = await client.groupMetadata(message.jid);
+		let {participants} = await client.groupMetadata(message.jid);
 		let participant = participants.map(u => u.id);
 		let str = "╭──〔 *Group Jids* 〕\n";
 		participant.forEach(result => {
@@ -327,7 +327,7 @@ Module(
 		});
 		str += `╰──────────────`;
 		message.send(str);
-	},
+	}
 );
 
 Module(
@@ -335,19 +335,19 @@ Module(
 		pattern: "tagall",
 		fromMe: true,
 		desc: "mention all users in group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return;
-		const { participants } = await message.client.groupMetadata(message.jid);
+		const {participants} = await message.client.groupMetadata(message.jid);
 		let teks = "";
 		for (let mem of participants) {
 			teks += ` @${mem.id.split("@")[0]}\n`;
 		}
 		message.send(teks.trim(), {
-			mentions: participants.map(a => a.id),
+			mentions: participants.map(a => a.id)
 		});
-	},
+	}
 );
 
 Module(
@@ -355,18 +355,18 @@ Module(
 		pattern: "tag",
 		fromMe: true,
 		desc: "mention all users in group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		console.log("match");
 		match = match || message.reply_message.text;
 		if (!match) return message.reply("_Enter or reply to a text to tag_");
 		if (!message.isGroup) return;
-		const { participants } = await message.client.groupMetadata(message.jid);
+		const {participants} = await message.client.groupMetadata(message.jid);
 		message.send(match, {
-			mentions: participants.map(a => a.id),
+			mentions: participants.map(a => a.id)
 		});
-	},
+	}
 );
 
 Module(
@@ -374,11 +374,11 @@ Module(
 		pattern: "ginfo",
 		fromMe: true,
 		desc: "get group info",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
-		const { subject, owner, desc, participants, creation } = await client.groupMetadata(message.jid);
+		const {subject, owner, desc, participants, creation} = await client.groupMetadata(message.jid);
 		const admins = participants.filter(p => p.admin).map(p => p.id);
 		const creationDate = new Date(creation * 1000).toLocaleString();
 		let info = `*Group Name:* ${subject}\n`;
@@ -387,8 +387,8 @@ Module(
 		info += `*Total Participants:* ${participants.length}\n`;
 		info += `*Total Admins:* ${admins.length}\n`;
 		info += `*Description:* ${desc || "No description"}`;
-		return await message.send(info, { mentions: [owner, ...admins] });
-	},
+		return await message.send(info, {mentions: [owner, ...admins]});
+	}
 );
 
 Module(
@@ -396,18 +396,18 @@ Module(
 		pattern: "admins",
 		fromMe: true,
 		desc: "get group admins",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
-		const { participants } = await client.groupMetadata(message.jid);
+		const {participants} = await client.groupMetadata(message.jid);
 		const admins = participants.filter(p => p.admin).map(p => p.id);
 		let adminList = "*Group Admins:*\n";
 		admins.forEach((admin, index) => {
 			adminList += `${index + 1}. @${admin.split("@")[0]}\n`;
 		});
-		return await message.sendMessage(message.chat, adminList, { mentions: admins });
-	},
+		return await message.sendMessage(message.chat, adminList, {mentions: admins});
+	}
 );
 
 Module(
@@ -415,7 +415,7 @@ Module(
 		pattern: "gdesc",
 		fromMe: true,
 		desc: "change group description",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -423,7 +423,7 @@ Module(
 		if (!match) return await message.reply("_Provide the new group description_");
 		await client.groupUpdateDescription(message.jid, match);
 		return await message.reply("_Group description updated_");
-	},
+	}
 );
 
 Module(
@@ -431,7 +431,7 @@ Module(
 		pattern: "gname",
 		fromMe: true,
 		desc: "change group name",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -439,7 +439,7 @@ Module(
 		if (!match) return await message.reply("_Provide the new group name_");
 		await client.groupUpdateSubject(message.jid, match);
 		return await message.reply("_Group name updated_");
-	},
+	}
 );
 
 Module(
@@ -447,7 +447,7 @@ Module(
 		pattern: "gpp",
 		fromMe: true,
 		desc: "change group profile picture",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -456,7 +456,7 @@ Module(
 		const media = await m.quoted.download();
 		await client.updateProfilePicture(message.jid, media);
 		return await message.reply("_Group profile picture updated_");
-	},
+	}
 );
 
 Module(
@@ -464,7 +464,7 @@ Module(
 		pattern: "requests",
 		fromMe: true,
 		desc: "view join requests",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -475,8 +475,8 @@ Module(
 		requests.forEach((request, index) => {
 			requestList += `${index + 1}. @${request.jid.split("@")[0]}\n`;
 		});
-		await message.send(requestList, { mentions: requests.map(r => r.jid) });
-	},
+		await message.send(requestList, {mentions: requests.map(r => r.jid)});
+	}
 );
 
 Module(
@@ -484,7 +484,7 @@ Module(
 		pattern: "accept",
 		fromMe: true,
 		desc: "accept join request",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -492,8 +492,8 @@ Module(
 		if (!match) return await message.reply("_Provide the number or mention the user to accept_");
 		const jid = parsedJid(match)[0];
 		await client.groupRequestParticipantsUpdate(message.jid, [jid], "approve");
-		return await message.sendMessage(message.chat, `_@${jid.split("@")[0]} accepted to the group_`, { mentions: [jid] });
-	},
+		return await message.sendMessage(message.chat, `_@${jid.split("@")[0]} accepted to the group_`, {mentions: [jid]});
+	}
 );
 
 Module(
@@ -501,7 +501,7 @@ Module(
 		pattern: "reject",
 		fromMe: true,
 		desc: "reject join request",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -509,8 +509,8 @@ Module(
 		if (!match) return await message.reply("_Provide the number or mention the user to reject_");
 		const jid = parsedJid(match)[0];
 		await client.groupRequestParticipantsUpdate(message.jid, [jid], "reject");
-		return await message.sebdMessage(message.chat, `_@${jid.split("@")[0]} rejected from the group_`, { mentions: [jid] });
-	},
+		return await message.sebdMessage(message.chat, `_@${jid.split("@")[0]} rejected from the group_`, {mentions: [jid]});
+	}
 );
 
 Module(
@@ -518,7 +518,7 @@ Module(
 		pattern: "common",
 		fromMe: true,
 		desc: "find common participants between two groups",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -536,8 +536,8 @@ Module(
 		commonParticipants.forEach((participant, index) => {
 			commonList += `${index + 1}. @${participant.split("@")[0]}\n`;
 		});
-		return await message.send(commonList, { mentions: commonParticipants });
-	},
+		return await message.send(commonList, {mentions: commonParticipants});
+	}
 );
 
 Module(
@@ -545,7 +545,7 @@ Module(
 		pattern: "diff",
 		fromMe: true,
 		desc: "find participants in one group but not in another",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -563,8 +563,8 @@ Module(
 			uniqueList += `${index + 1}. @${participant.split("@")[0]}\n`;
 		});
 
-		return await message.sendMessage(message.chat, uniqueList, { mentions: uniqueParticipants });
-	},
+		return await message.sendMessage(message.chat, uniqueList, {mentions: uniqueParticipants});
+	}
 );
 
 Module(
@@ -572,7 +572,7 @@ Module(
 		pattern: "invite",
 		fromMe: true,
 		desc: "Generate invite link for the current group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.reply("_This command is for groups_");
@@ -585,14 +585,14 @@ Module(
 		const replyMessage = `*Group Invite Link*\n\n` + `*Group:* ${groupMetadata.subject}\n` + `*Link:* ${inviteLink}\n`;
 
 		return await message.send(replyMessage);
-	},
+	}
 );
 
 const groupSettings = new Map();
 
 function getGroupSettings(jid) {
 	if (!groupSettings.has(jid)) {
-		groupSettings.set(jid, { antiPromote: false, antiDemote: false });
+		groupSettings.set(jid, {antiPromote: false, antiDemote: false});
 	}
 	return groupSettings.get(jid);
 }
@@ -602,7 +602,7 @@ Module(
 		pattern: "antipromote",
 		fromMe: true,
 		desc: "Toggle anti-promote feature for the group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.sendReply("This command can only be used in groups.");
@@ -611,7 +611,7 @@ Module(
 		groupSettings.antiPromote = !groupSettings.antiPromote;
 
 		await message.sendReply(`Anti-promote has been ${groupSettings.antiPromote ? "enabled" : "disabled"} for this group.`);
-	},
+	}
 );
 
 Module(
@@ -619,7 +619,7 @@ Module(
 		pattern: "antidemote",
 		fromMe: true,
 		desc: "Toggle anti-demote feature for the group",
-		type: "group",
+		type: "group"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return await message.sendReply("This command can only be used in groups.");
@@ -628,12 +628,12 @@ Module(
 		groupSettings.antiDemote = !groupSettings.antiDemote;
 
 		await message.sendReply(`Anti-demote has been ${groupSettings.antiDemote ? "enabled" : "disabled"} for this group.`);
-	},
+	}
 );
 
 Module(
 	{
-		on: "group_update",
+		on: "group_update"
 	},
 	async (message, match, m, client) => {
 		if (!message.isGroup) return;
@@ -645,13 +645,13 @@ Module(
 			for (let jid of participants) {
 				await client.groupParticipantsUpdate(message.jid, [jid], "demote");
 			}
-			await client.sendMessage(message.jid, { text: "Anti-promote activated. Promotion reverted." });
+			await client.sendMessage(message.jid, {text: "Anti-promote activated. Promotion reverted."});
 		} else if (message.update === "demote" && groupSettings.antiDemote) {
 			const participants = message.participants;
 			for (let jid of participants) {
 				await client.groupParticipantsUpdate(message.jid, [jid], "promote");
 			}
-			await client.sendMessage(message.jid, { text: "Anti-demote activated. Demotion reverted." });
+			await client.sendMessage(message.jid, {text: "Anti-demote activated. Demotion reverted."});
 		}
-	},
+	}
 );
