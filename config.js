@@ -29,6 +29,7 @@ module.exports = {
 	WELCOME_MSG: process.env.WELCOME_MSG || "",
 	GOODBYE_MSG: process.env.GOODBYE_MSG || "",
 	ANTILINK: process.env.ANTILINK || false,
+	AUTO_BIO: process.env.AUTO_BIO || true,
 	AUTO_REACT: process.env.AUTO_REACT || false,
 	AUTO_READ: toBool(process.env.AUTO_READ) || false,
 	AUTO_STATUS_READ: toBool(process.env.AUTO_STATUS_READ) || false,
