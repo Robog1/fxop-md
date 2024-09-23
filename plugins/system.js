@@ -513,33 +513,19 @@ Module(
 
 		try {
 			let result;
-			const func = new Function("message", "match", "m", "client", "msg", "ms", `return (async () => { ${evalCmd.replace(/^return\s+/, "return ")} })();`);
+			const func = new Function("message", "match", "m", "client"`return (async () => { return ${evalCmd}; })();`);
+
 			result = await func(message, match, m, client, msg, ms);
-
-			if (typeof result === "object" && result !== null) {
-				result = util.inspect(result, { depth: null });
-			} else if (typeof result === "function") {
-				let functionString = result.toString();
-				if (functionString.includes("[native code]") || functionString.length < 50) {
-					let properties = Object.getOwnPropertyNames(result);
-					let propertyString = properties
-						.map(prop => {
-							try {
-								return `${prop}: ${util.inspect(result[prop], { depth: 0 })}`;
-							} catch (e) {
-								return `${prop}: [Unable to inspect]`;
-							}
-						})
-						.join("\n");
-
-					functionString += "\n\nProperties:\n" + propertyString;
-				}
-				result = functionString;
-			} else if (typeof result !== "string") {
-				result = util.inspect(result, { depth: null });
+			if (result === undefined) {
+				if (evalCmd === "message") result = message;
+				if (evalCmd === "client") result = client;
+				if (evalCmd === "m") result = m;
+			}
+			if (typeof result === "object") {
+				result = require("util").inspect(result, { depth: 2 });
 			}
 
-			await message.reply(result);
+			await message.reply(result?.toString() || "No result");
 		} catch (error) {
 			await message.reply(`Error: ${error.message}`);
 		}
