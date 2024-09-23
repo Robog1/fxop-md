@@ -1,66 +1,49 @@
 ## WhatsApp Bot
 
-<p align="center">
+<div align="center" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
   <a href="https://fx-website-one.vercel.app/">
     <img src="https://img.shields.io/badge/FX WEBSITE-000?style=for-the-badge&logo=vercel&logoColor=white" alt="Generate Session ID"/>
   </a>
 
   <a href="https://github.com/FXastro/fxop-md/fork">
-    <img src="https://img.shields.io/badge/FORK REPO-000?style=for-the-badge&logo=github&logoColor=white" alt="Generate Session ID"/>
+    <img src="https://img.shields.io/badge/FORK REPO-000?style=for-the-badge&logo=github&logoColor=white" alt="Fork Repository"/>
   </a>
-</p>
 
-A Simple WhatsApp bot built with the Baileys library, designed for easy deployment across various platforms.
+  <a href="https://www.heroku.com/deploy?template=https://github.com/FXastro/fxop-md">
+    <img src="https://img.shields.io/badge/Deploy on Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white" alt="Deploy on Heroku"/>
+  </a>
 
----
+  <a href="https://app.koyeb.com/services/deploy?type=docker&image=docker.io/fxastro/fxop-md&name=fxop-md-demo">
+    <img src="https://img.shields.io/badge/Deploy on Koyeb-0096D6?style=for-the-badge&logo=koyeb&logoColor=white" alt="Deploy on Koyeb"/>
+  </a>
 
-### Deployment Options
+  <a href="https://render.com/deploy?repo=https://github.com/FXastro/fxop-md">
+    <img src="https://img.shields.io/badge/Deploy on Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Deploy on Render"/>
+  </a>
 
-Deploy your bot on any of these platforms:
+  <a href="https://railway.app/new/template?template=https://github.com/FXastro/fxop-md">
+    <img src="https://img.shields.io/badge/Deploy on Railway-0B0B0B?style=for-the-badge&logo=railway&logoColor=white" alt="Deploy on Railway"/>
+  </a>
 
-- [Heroku](https://www.heroku.com/deploy?template=https://github.com/FXastro/fxop-md)  
-  Purpose: Ideal for hosting Node.js applications with easy scaling.  
-  **API Key**: Create a Heroku account and follow the prompts to generate an API key in your dashboard.  
-  **Env Setup**: Add your API key & APP NAME to the `.env` file as `HEROKU_API_KEY="your_api_key"` and `HEROKU_APP_NAME="your_app_name"`.
+  <a href="https://github.com/FXastro/fxop-md?tab=readme-ov-file#termux-installation">
+    <img src="https://img.shields.io/badge/Termux Setup-00A980?style=for-the-badge&logo=android&logoColor=white" alt="Termux Installation"/>
+  </a>
 
-- [Koyeb](https://app.koyeb.com/services/deploy?type=docker&image=docker.io/fxastro/fxop-md&name=fxop-md-demo)  
-  Purpose: High-performance hosting for Dockerized Node.js apps.  
-  **API Key**: Sign up for a Koyeb account to access your API key in the dashboard.  
-  **Env Setup**: Include it in your `.env` file as `KOYEB_API_KEY="your_api_key"`.
+  <a href="https://github.com/FXastro/fxop-md/releases/">
+    <img src="https://img.shields.io/badge/Panel-292E49?style=for-the-badge&logo=github&logoColor=white" alt="Panel Installation"/>
+  </a>
 
-- [Render](https://render.com/deploy?repo=https://github.com/FXastro/fxop-md)  
-  Purpose: Great for auto-scaling Node.js applications with minimal configuration.  
-  **API Key**: Create a Render account to generate an API key via your account settings.  
-  **Env Setup**: Add to `.env` as `RENDER_API_KEY="your_api_key"`.
+  <a href="https://github.com/codespaces/new?repo=843557699&ref=master">
+    <img src="https://img.shields.io/badge/Codespaces-181717?style=for-the-badge&logo=github&logoColor=white" alt="Deploy on Codespaces"/>
+  </a>
 
-- [Railway](https://railway.app/new/template?template=https://github.com/FXastro/fxop-md)  
-  Purpose: Quick deployment for Node.js apps with a user-friendly interface.  
-  **API Key**: Register for a Railway account to obtain an API key in your dashboard.  
-  **Env Setup**: Set it in your `.env` as `RAILWAY_API_KEY="your_api_key"`.
+  <a href="https://replit.com/~">
+    <img src="https://img.shields.io/badge/Deploy on Replit-0E152A?style=for-the-badge&logo=replit&logoColor=white" alt="Deploy on Replit"/>
+  </a>
+  A Simple WhatsApp bot built with the Baileys library, designed for easy deployment across various platforms.
+</div>
 
-- [Termux](https://github.com/FXastro/fxop-md?tab=readme-ov-file#termux-installation)  
-  Purpose: Run Node.js apps directly on Android devices.  
-  **API Key**: No API key needed; simply clone the repository and set up.  
-  **Env Setup**: Create a `.env` file for your bot's session ID and info.
-
-- [Panel](https://github.com/FXastro/fxop-md/releases/)  
-  Purpose: Web-based interface for managing your Node.js bot.  
-  **API Key**: No API key required; install directly from releases.  
-  **Env Setup**: Configure in your `.env` as necessary for the bot.
-
-- [Codespaces](https://github.com/codespaces/new?repo=843557699&ref=master)  
-  Purpose: Cloud-based development environment for Node.js applications.  
-  **API Key**: Not needed; set up your project directly in Codespaces.  
-  **Env Setup**: Create a `.env` file for your bot's configuration.
-
-- [Replit](https://replit.com/~)  
-  Purpose: Free, browser-based option perfect for beginners with Node.js.  
-  **API Key**: No API key required; sign up to start a new project.  
-  **Env Setup**: Use the built-in environment variable management for your bot.
-
----
-
-### Local Setup
+## Local Deployment
 
 To run the bot locally:
 
@@ -69,8 +52,26 @@ To run the bot locally:
 2. **Configure Environment Variables**: Create a `.env` file with:
 
    ```env
+   # Configurations
    SESSION_ID="your_generated_session_id"
-   BOT_INFO="YourName,YourBotName"
+   BOT_INFO="YourName;YourBotName;https://linktoyourimage.com/image.jpg"
+   SUDO="your_whatsapp_number"
+   HANDLER="." # Bot command prefix, e.g., "." or "^"
+   WELCOME_MSG="Welcome to the group!"
+   GOODBYE_MSG="Goodbye, we will miss you!"
+   ANTILINK="false" # Set to "true" to enable anti-link detection
+   AUTO_BIO="true" # Set to "true" to automatically update bot bio
+   AUTO_REACT="false" # Set to "true" to enable auto-reactions to messages
+   AUTO_READ="false" # Set to "true" to enable auto-reading of messages
+   AUTO_STATUS_READ="false" # Set to "true" to auto-read status updates
+   STICKER_PACK="Astro;FXBOTTO" # Author name for stickers
+   LOGS="false" # Set to "true" to enable bot logging
+   DELETED_LOG="false" # Log deleted messages, set to "true" to enable
+   DELETED_LOG_CHAT="false" # Log deleted chat messages, set to "true" to enable
+   TZ="Your/Timezone" # Specify your timezone
+   WORK_TYPE="private" # Define the work type, options are 'private' or 'public'
+   RMBG_API_KEY="your_removebg_api_key" # API key for background removal
+
    ```
 
 3. **Launch the Bot**: Use Node.js, Docker, or your preferred method.
@@ -80,73 +81,3 @@ To run the bot locally:
 ### Support
 
 Need help? Join our [WhatsApp support channel](https://whatsapp.com/channel/0029VambPbJ2f3ERs37HvM2J).
-
----
-
-### Termux Installation
-
-Quick setup for Termux:
-
-```bash
-pkg update && pkg upgrade -y
-pkg install nodejs ffmpeg git python openssh nano wget -y
-git clone https://github.com/FXastro/fxop-md
-cd fxop-md
-npm install
-npm start
-```
-
-### Extended Setup (Optional)
-
-Save the following as `termux-setup.sh`:
-
-```bash
-#!/bin/bash
-pkg update && pkg upgrade -y
-pkg install nodejs ffmpeg git python openssh nano wget -y
-git clone https://github.com/FXastro/fxop-md
-cd fxop-md
-npm install
-echo 'SESSION_ID="your_session_id_here"' > .env
-echo 'BOT_INFO="your_bot_info_here"' >> .env
-npm start
-```
-
-Make it executable and run:
-
-```bash
-chmod +x termux-setup.sh
-./termux-setup.sh
-```
-
----
-
-### Installation Issues?
-
-If you encounter errors:
-
-1. Install Android NDK:
-
-   ```bash
-   pkg install ndk-sysroot
-   ```
-
-2. Ensure dependencies are installed:
-
-   ```bash
-   pkg install make gcc python
-   ```
-
-3. Rebuild SQLite3:
-   ```bash
-   npm rebuild sqlite3
-   ```
-
----
-
-### Important Notes
-
-- Always replace placeholder values with your actual data.
-- The setup script automates installation and configuration.
-- Never share sensitive information like your `SESSION_ID`.
-- Use the bot at your own risk; it's provided as-is.
