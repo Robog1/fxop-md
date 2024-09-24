@@ -40,6 +40,8 @@
   <a href="https://replit.com/~">
     <img src="https://img.shields.io/badge/Deploy on Replit-0E152A?style=for-the-badge&logo=replit&logoColor=white" alt="Deploy on Replit"/>
   </a>
+
+
   A Simple WhatsApp bot built with the Baileys library, designed for easy deployment across various platforms.
 </div>
 
