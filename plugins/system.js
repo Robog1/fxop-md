@@ -37,7 +37,7 @@ Module(
   pattern: "ping",
   fromMe: mode,
   desc: "Bot response in milliseconds.",
-  type: "system"
+  type: "system",
  },
  async message => {
   const start = new Date().getTime();
@@ -53,7 +53,7 @@ Module(
   pattern: "restart",
   fromMe: true,
   desc: "Restarts Bot",
-  type: "system"
+  type: "system",
  },
  async (msg, match, client) => {
   await msg.sendReply("*_Restarting..._*");
@@ -76,7 +76,7 @@ Module(
   pattern: "shutdown",
   fromMe: true,
   desc: "Stops the bot",
-  type: "system"
+  type: "system",
  },
  async (message, match) => {
   await message.sendReply("*_Shutting Down..._*");
@@ -89,7 +89,7 @@ Module(
   pattern: "enable ?(.*)",
   fromMe: true,
   desc: "Disables the bot",
-  type: "system"
+  type: "system",
  },
  async message => {
   await PausedChats.savePausedChat(message.key.remoteJid);
@@ -102,7 +102,7 @@ Module(
   pattern: "disable ?(.*)",
   fromMe: true,
   desc: "Enables the bot",
-  type: "system"
+  type: "system",
  },
  async message => {
   const pausedChat = await PausedChats.PausedChats.findOne({ where: { chatId: message.key.remoteJid } });
@@ -120,7 +120,7 @@ Module(
   pattern: "runtime",
   fromMe: true,
   desc: "Check uptime of bot",
-  type: "system"
+  type: "system",
  },
  async (message, match) => {
   message.reply(`*${BOT_INFO.split(";")[1]} ${runtime(process.uptime())}*`);
@@ -132,7 +132,7 @@ Module(
   pattern: "logout",
   fromMe: true,
   desc: "logouts of out the bot",
-  type: "system"
+  type: "system",
  },
  async (message, match, client) => {
   await message.sendReply("_Logged Out!_");
@@ -145,7 +145,7 @@ Module(
   pattern: "cpu",
   fromMe: mode,
   desc: "Returns CPU Info",
-  type: "system"
+  type: "system",
  },
  async message => {
   const cpuInfo = await getCpuInfo();
@@ -157,7 +157,7 @@ Module(
   pattern: "install",
   fromMe: true,
   desc: "Installs External plugins",
-  type: "system"
+  type: "system",
  },
  installPluginHandler
 );
@@ -166,7 +166,7 @@ Module(
   pattern: "plugin",
   fromMe: true,
   desc: "Plugin list",
-  type: "system"
+  type: "system",
  },
  listPluginsHandler
 );
@@ -175,7 +175,7 @@ Module(
   pattern: "remove",
   fromMe: true,
   desc: "Remove external plugins",
-  type: "system"
+  type: "system",
  },
  removePluginHandler
 );
@@ -185,7 +185,7 @@ Module(
   pattern: "menu",
   fromMe: mode,
   description: "Show All Commands",
-  dontAddCommandList: true
+  dontAddCommandList: true,
  },
  async (message, query) => {
   if (query) {
@@ -242,8 +242,12 @@ Description: ${plugin.description || "No description available"}\`\`\``);
     const media = await getBuffer(BOT_INFO.split(";")[2]);
     return await message.send(media, { caption: tiny(menuText.trim()) });
    } catch (error) {
-    const defaultImg = await localBuffer(path.join(__dirname, "../lib/media/images/thumb.jpg"));
-    return await message.send(defaultImg, { caption: tiny(menuText.trim()) });
+    try {
+     const defaultImg = await localBuffer(path.join(__dirname, "../lib/Client/media/images/thumb.jpg"));
+     return await message.send(defaultImg, { caption: tiny(menuText.trim()) });
+    } catch (error) {
+     return await message.send(tiny(menuText.trim()));
+    }
    }
   }
  }
@@ -254,7 +258,7 @@ Module(
   pattern: "list",
   fromMe: mode,
   description: "Show All Commands",
-  dontAddCommandList: true
+  dontAddCommandList: true,
  },
  async (message, query, { prefix }) => {
   let commandListText = "\t\t```Command List```\n";
@@ -283,7 +287,7 @@ Module(
   pattern: "patch ?(.*)",
   fromMe: true,
   desc: "Run bot patching",
-  type: "system"
+  type: "system",
  },
  async m => {
   await m.reply("_Feature UnderDevelopment!_");
@@ -295,7 +299,7 @@ Module(
   pattern: "fxop ?(.*)",
   fromMe: mode,
   desc: "Get Active Fxop Users",
-  type: "system"
+  type: "system",
  },
  async m => {
   const msg = await m.reply("Fetching Users");
@@ -310,7 +314,7 @@ Module(
   pattern: "checkupdates ?(.*)",
   fromMe: true,
   desc: "Check remote for Updates",
-  type: "system"
+  type: "system",
  },
  async (message, match, m, client) => {
   try {
@@ -334,7 +338,7 @@ Module(
   pattern: "update",
   fromMe: true,
   desc: "Update the bot and redeploy",
-  type: "system"
+  type: "system",
  },
  async (message, match) => {
   const prefix = message.prefix;
@@ -472,16 +476,16 @@ async function redeployKoyeb(message) {
       instance_types: ["nano"],
       scalings: [{ min: 1, max: 1 }],
       docker: {
-       image_name: "koyeb/demo"
-      }
-     }
-    }
+       image_name: "koyeb/demo",
+      },
+     },
+    },
    },
    {
     headers: {
      Authorization: `Bearer ${KOYEB_API_KEY}`,
-     "Content-Type": "application/json"
-    }
+     "Content-Type": "application/json",
+    },
    }
   );
 
@@ -502,9 +506,9 @@ Module(
  {
   on: "text",
   fromMe: true,
-  dontAddCommandList: true
+  dontAddCommandList: true,
  },
- async (message, match, m, client, msg, ms) => {
+ async (message, match, m, client) => {
   const content = message.text;
   if (!content) return;
   if (!(content.startsWith(">") || content.startsWith("$") || content.startsWith("|"))) return;
@@ -513,22 +517,22 @@ Module(
 
   try {
    let result;
-   const func = new Function("message", "match", "m", "client", "msg", "ms", `return (async () => { return ${evalCmd}; })();`);
-   result = await func(message, match, m, client, msg, ms);
-   if (result === undefined) {
-    if (evalCmd === "message") result = message;
-    if (evalCmd === "client") result = client;
-    if (evalCmd === "m") result = m;
-   }
-   if (typeof result === "function") {
-    result = result.toString();
-   } else if (typeof result === "object" && result !== null) {
-    result = require("util").inspect(result, { depth: 2 });
+   const scope = {
+    message,
+    match,
+    m,
+    client,
+   };
+   result = await (async () => {
+    return eval(`(async function() { ${evalCmd} })();`);
+   }).call(scope);
+   const variableNames = Object.keys(scope).filter(key => key !== "message" && key !== "match" && key !== "m" && key !== "client" && key !== "msg" && key !== "ms");
+   if (variableNames.length > 0) {
+    const properties = variableNames.map(name => `${name}: ${require("util").inspect(scope[name], { depth: 2 })}`).join(", ");
+    await message.reply(`Success! Declared variables: { ${properties} }`);
    } else {
-    result = result?.toString();
+    await message.reply(result || "No result");
    }
-
-   await message.reply(result || "No result");
   } catch (error) {
    await message.reply(`Error: ${error.message}`);
   }

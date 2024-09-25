@@ -1,76 +1,76 @@
-const { Module, mode, serialize, parsedJid, loadMessage, getName } = require("../lib");
-const { DELETED_LOG_CHAT, DELETED_LOG } = require("../config");
+const { Module, mode, serialize, parsedJid, loadMessage, getName } = require('../lib');
+const { DELETED_LOG_CHAT, DELETED_LOG } = require('../config');
 
 Module(
  {
-  pattern: "readmore ?(.*)",
+  pattern: 'readmore ?(.*)',
   fromMe: mode,
-  desc: "Make Readmore Text",
-  type: "whatsapp"
+  desc: 'Make Readmore Text',
+  type: 'whatsapp'
  },
  async (message, match) => {
-  if (!match) return message.reply("Need text\n_Example: .readmore Hihow are you_");
-  const [c1, c2] = match.split("\\");
-  message.reply(`${c1}\n${"‎".repeat(4000)}\n${c2}`);
+  if (!match) return message.reply('Need text\n_Example: .readmore Hihow are you_');
+  const [c1, c2] = match.split('\\');
+  message.reply(`${c1}\n${'‎'.repeat(4000)}\n${c2}`);
  }
 );
 
 Module(
  {
-  pattern: "setpp",
+  pattern: 'setpp',
   fromMe: true,
-  desc: "Set profile picture",
-  type: "user"
+  desc: 'Set profile picture',
+  type: 'user'
  },
  async (message, match, m, client) => {
-  if (!message.reply_message.image) return await message.reply("_Reply to a photo_");
+  if (!message.reply_message.image) return await message.reply('_Reply to a photo_');
   let buff = await m.quoted.download();
   await client.updateProfilePicture(message.user, buff);
-  return await message.reply("_Profile Picture Updated_");
+  return await message.reply('_Profile Picture Updated_');
  }
 );
 
 Module(
  {
-  pattern: "fullpp$",
+  pattern: 'fullpp$',
   fromMe: true,
-  desc: "Set full screen profile picture",
-  type: "whatsapp"
+  desc: 'Set full screen profile picture',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
-  if (match === "remove") {
+  if (match === 'remove') {
    await client.removeProfilePicture(message.user.jid);
-   return await message.reply("_Profile Picture Removed_");
+   return await message.reply('_Profile Picture Removed_');
   }
-  if (!message.reply_message || !message.reply_message.image) return await message.reply("_Reply to a photo_");
+  if (!message.reply_message || !message.reply_message.image) return await message.reply('_Reply to a photo_');
   let media = await message.reply_message.download();
   await client.updateProfile(media, message.user.jid);
-  return await message.reply("_Profile Picture Updated!_");
+  return await message.reply('_Profile Picture Updated!_');
  }
 );
 
 Module(
  {
-  pattern: "rpp ?(.*)",
+  pattern: 'rpp ?(.*)',
   fromMe: true,
-  desc: "Remove profile picture",
-  type: "whatsapp"
+  desc: 'Remove profile picture',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   await client.removeProfilePicture(message.user);
-  return await message.sendReply("_Profile Photo Removed!_");
+  return await message.sendReply('_Profile Photo Removed!_');
  }
 );
 
 Module(
  {
-  pattern: "setname ?(.*)",
+  pattern: 'setname ?(.*)',
   fromMe: true,
-  desc: "Set User name",
-  type: "whatsapp"
+  desc: 'Set User name',
+  type: 'whatsapp'
  },
  async (message, match) => {
-  if (!match) return await message.reply("_Enter name_");
+  if (!match) return await message.reply('_Enter name_');
 
   await message.updateProfileName(match);
   await message.reply(`_Username Updated : ${match}_`);
@@ -79,54 +79,54 @@ Module(
 
 Module(
  {
-  pattern: "block",
+  pattern: 'block',
   fromMe: true,
-  desc: "Block a person",
-  type: "whatsapp"
+  desc: 'Block a person',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   if (message.isGroup) {
    let jid = message.mention[0] || message.reply_message.jid;
-   if (!jid) return await message.reply("_Reply to a person or mention_");
-   await client.updateBlockStatus(jid, "block");
-   return await message.sendMessage(`_@${jid.split("@")[0]} Blocked_`, {
+   if (!jid) return await message.reply('_Reply to a person or mention_');
+   await client.updateBlockStatus(jid, 'block');
+   return await message.sendMessage(`_@${jid.split('@')[0]} Blocked_`, {
     mentions: [jid]
    });
   } else {
-   await client.updateBlockStatus(message.jid, "block");
-   return await message.reply("_User blocked_");
+   await client.updateBlockStatus(message.jid, 'block');
+   return await message.reply('_User blocked_');
   }
  }
 );
 
 Module(
  {
-  pattern: "unblock",
+  pattern: 'unblock',
   fromMe: true,
-  desc: "Unblock a person",
-  type: "whatsapp"
+  desc: 'Unblock a person',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   if (message.isGroup) {
    let jid = message.mention[0] || message.reply_message.jid;
-   if (!jid) return await message.reply("_Reply to a person or mention_");
-   await client.updateBlockStatus(jid, "unblock");
-   return await message.sendMessage(message.jid, `_@${jid.split("@")[0]} unblocked_`, {
+   if (!jid) return await message.reply('_Reply to a person or mention_');
+   await client.updateBlockStatus(jid, 'unblock');
+   return await message.sendMessage(message.jid, `_@${jid.split('@')[0]} unblocked_`, {
     mentions: [jid]
    });
   } else {
-   await client.updateBlockStatus(message.jid, "unblock");
-   return await message.reply("_User unblocked_");
+   await client.updateBlockStatus(message.jid, 'unblock');
+   return await message.reply('_User unblocked_');
   }
  }
 );
 
 Module(
  {
-  pattern: "jid ?(.*)",
+  pattern: 'jid ?(.*)',
   fromMe: true,
-  desc: "Give jid of chat/user",
-  type: "whatsapp"
+  desc: 'Give jid of chat/user',
+  type: 'whatsapp'
  },
  async message => {
   const jid = message.mention[0] || message.reply_message.jid || message.jid;
@@ -136,13 +136,13 @@ Module(
 
 Module(
  {
-  pattern: "dlt ?(.*)",
+  pattern: 'dlt ?(.*)',
   fromMe: true,
-  desc: "Deletes a message",
-  type: "whatsapp"
+  desc: 'Deletes a message',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
-  if (!message.reply_message) return await message.reply("Please reply to the message you want to delete.");
+  if (!message.reply_message) return await message.reply('Please reply to the message you want to delete.');
 
   await client.sendMessage(message.jid, { delete: message.reply_message.key });
  }
@@ -150,13 +150,13 @@ Module(
 
 Module(
  {
-  pattern: "vv",
+  pattern: 'vv',
   fromMe: true,
-  desc: "Forwards The View once messsage",
-  type: "whatsapp"
+  desc: 'Forwards The View once messsage',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
-  if (!message.reply_message) return await message.reply("Reply a ViewOnce");
+  if (!message.reply_message) return await message.reply('Reply a ViewOnce');
   let buff = await m.quoted.download();
   return await message.sendFile(buff);
  }
@@ -164,20 +164,20 @@ Module(
 
 Module(
  {
-  pattern: "quoted ?(.*)",
+  pattern: 'quoted ?(.*)',
   fromMe: mode,
-  desc: "Quoted message",
-  type: "whatsapp"
+  desc: 'Quoted message',
+  type: 'whatsapp'
  },
  async message => {
-  if (!message.reply_message) return await message.reply("*Reply to a message*");
+  if (!message.reply_message) return await message.reply('*Reply to a message*');
 
   const key = message.reply_message.key;
   let msg = await loadMessage(key.id);
-  if (!msg) return await message.reply("_Message not found, maybe bot was not running at that time_");
+  if (!msg) return await message.reply('_Message not found, maybe bot was not running at that time_');
 
   msg = await serialize(JSON.parse(JSON.stringify(msg.message)), message.client);
-  if (!msg.quoted) return await message.reply("No quoted message found");
+  if (!msg.quoted) return await message.reply('No quoted message found');
 
   await message.forward(message.jid, msg.quoted.message);
  }
@@ -185,35 +185,35 @@ Module(
 
 Module(
  {
-  pattern: "save ?(.*)",
+  pattern: 'save ?(.*)',
   fromMe: true,
-  desc: "Saves WhatsApp Status",
-  type: "whatsapp"
+  desc: 'Saves WhatsApp Status',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
-  if (!message.reply_message?.image && !message.reply_message.video && !message.reply_message.audio) return await message.sendReply("_Reply Status_");
+  if (!message.reply_message?.image && !message.reply_message.video && !message.reply_message.audio) return await message.sendReply('_Reply Status_');
   await message.forward(message.user, m.quoted.message);
  }
 );
 
 Module(
  {
-  on: "delete",
+  on: 'delete',
   fromMe: false,
   dontAddCommandList: true
  },
  async message => {
   if (!DELETED_LOG) return;
-  if (!DELETED_LOG_CHAT) return await message.sendMessage(message.user, "Please set DELETED_LOG_CHAT in ENV to use log delete message");
+  if (!DELETED_LOG_CHAT) return await message.sendMessage(message.user, 'Please set DELETED_LOG_CHAT in ENV to use log delete message');
 
   let msg = await loadMessage(message.messageId);
   if (!msg) return;
 
   msg = await serialize(JSON.parse(JSON.stringify(msg.message)), message.client);
-  if (!msg) return await message.reply("No deleted message found");
+  if (!msg) return await message.reply('No deleted message found');
 
   const deleted = await message.forward(message.chat, DELETED_LOG_CHAT, msg.message);
-  const name = !msg.from.endsWith("@g.us") ? `_Name : ${await getName(msg.from)}_` : `_Group : ${(await message.client.groupMetadata(msg.from)).subject}_\n_Name : ${await getName(msg.sender)}_`;
+  const name = !msg.from.endsWith('@g.us') ? `_Name : ${await getName(msg.from)}_` : `_Group : ${(await message.client.groupMetadata(msg.from)).subject}_\n_Name : ${await getName(msg.sender)}_`;
 
   await message.sendMessage(DELETED_LOG_CHAT, `_Message Deleted_\n_From : ${msg.from}_\n${name}\n_SenderJid : ${msg.sender}_`, { quoted: deleted });
  }
@@ -221,13 +221,13 @@ Module(
 
 Module(
  {
-  pattern: "forward ?(.*)",
+  pattern: 'forward ?(.*)',
   fromMe: mode,
-  desc: "Forwards the replied message (any type)",
-  type: "whatsapp"
+  desc: 'Forwards the replied message (any type)',
+  type: 'whatsapp'
  },
  async (message, match, m) => {
-  if (!m.quoted) return await message.reply("Reply to a message to forward");
+  if (!m.quoted) return await message.reply('Reply to a message to forward');
   const jids = parsedJid(match);
   for (const jid of jids) {
    await message.forward(jid, m.quoted.message);
@@ -237,31 +237,31 @@ Module(
 
 Module(
  {
-  pattern: "edit ?(.*)",
+  pattern: 'edit ?(.*)',
   fromMe: true,
-  desc: "Edit message sent by the bot",
-  type: "whatsapp"
+  desc: 'Edit message sent by the bot',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
-  if (!message.reply_message) return await message.reply("_Reply to a message_");
-  if (!match) return await message.reply("```Wrong Format " + message.pushName + "\n\n" + message.prefix + "edit hello```");
+  if (!message.reply_message) return await message.reply('_Reply to a message_');
+  if (!match) return await message.reply('```Wrong Format ' + message.pushName + '\n\n' + message.prefix + 'edit hello```');
 
   const repliedMessage = message.reply_message;
   const messageKey = repliedMessage.key;
   if (repliedMessage.edit) {
    await repliedMessage.edit(match, { key: messageKey });
   } else {
-   await message.reply("_Edit function not available on the message_");
+   await message.reply('_Edit function not available on the message_');
   }
  }
 );
 
 Module(
  {
-  pattern: "clear ?(.*)",
+  pattern: 'clear ?(.*)',
   fromMe: true,
-  desc: "delete whatsapp chat",
-  type: "whatsapp"
+  desc: 'delete whatsapp chat',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   await client.chatModify(
@@ -281,10 +281,10 @@ Module(
 
 Module(
  {
-  pattern: "archive ?(.*)",
+  pattern: 'archive ?(.*)',
   fromMe: true,
-  desc: "archive whatsapp chat",
-  type: "whatsapp"
+  desc: 'archive whatsapp chat',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   const lstMsg = {
@@ -299,16 +299,16 @@ Module(
    },
    message.jid
   );
-  await message.reply("_Archived.._");
+  await message.reply('_Archived.._');
  }
 );
 
 Module(
  {
-  pattern: "unarchive ?(.*)",
+  pattern: 'unarchive ?(.*)',
   fromMe: true,
-  desc: "unarchive whatsapp chat",
-  type: "whatsapp"
+  desc: 'unarchive whatsapp chat',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   const lstMsg = {
@@ -323,85 +323,85 @@ Module(
    },
    message.jid
   );
-  await message.reply("_Unarchived.._");
+  await message.reply('_Unarchived.._');
  }
 );
 
 Module(
  {
-  pattern: "pin",
+  pattern: 'pin',
   fromMe: true,
-  desc: "pin a chat",
-  type: "whatsapp"
+  desc: 'pin a chat',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   try {
    await client.pinchat();
-   await message.reply("_Pined.._");
+   await message.reply('_Pined.._');
   } catch (error) {
-   return await message.send("```App State Keys Not Found```");
+   return await message.send('```App State Keys Not Found```');
   }
  }
 );
 
 Module(
  {
-  pattern: "unpin ?(.*)",
+  pattern: 'unpin ?(.*)',
   fromMe: true,
-  desc: "unpin a msg",
-  type: "whatsapp"
+  desc: 'unpin a msg',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   try {
    await client.unpinchat();
-   await message.reply("_Unpined.._");
+   await message.reply('_Unpined.._');
   } catch (error) {
-   return message.send("```App State Keys Not Found!```");
+   return message.send('```App State Keys Not Found!```');
   }
  }
 );
 
 Module(
  {
-  pattern: "setbio",
+  pattern: 'setbio',
   fromMe: true,
-  desc: "To change your profile status",
-  type: "whatsapp"
+  desc: 'To change your profile status',
+  type: 'whatsapp'
  },
  async (message, match, m, client) => {
   match = match || message.reply_message.text;
-  if (!match) return await message.send("*Need Status!*\n*Example: setbio Hey there! I am using WhatsApp*.");
+  if (!match) return await message.send('*Need Status!*\n*Example: setbio Hey there! I am using WhatsApp*.');
   await client.updateProfileStatus(match);
-  await message.reply("_Profile bio updated_");
+  await message.reply('_Profile bio updated_');
  }
 );
 
 Module(
  {
-  pattern: "getprivacy ?(.*)",
+  pattern: 'getprivacy ?(.*)',
   fromMe: true,
-  desc: "get your privacy settings",
-  type: "privacy"
+  desc: 'get your privacy settings',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   const { readreceipts, profile, status, online, last, groupadd, calladd } = await message.client.fetchPrivacySettings(true);
   const msg = `*♺ my privacy*\n\n*ᝄ name :* ${client.user.name}\n*ᝄ online:* ${online}\n*ᝄ profile :* ${profile}\n*ᝄ last seen :* ${last}\n*ᝄ read receipt :* ${readreceipts}\n*ᝄ about seted time :*\n*ᝄ group add settings :* ${groupadd}\n*ᝄ call add settings :* ${calladd}`;
-  let img = await client.profilePictureUrl(message.user, "image").catch(() => "https://f.uguu.se/oHGtgfmR.jpg");
-  await message.send(img, { caption: msg }, "image");
+  let img = await client.profilePictureUrl(message.user, 'image').catch(() => 'https://f.uguu.se/oHGtgfmR.jpg');
+  await message.send(img, { caption: msg }, 'image');
  }
 );
 
 Module(
  {
-  pattern: "lastseen ?(.*)",
+  pattern: 'lastseen ?(.*)',
   fromMe: true,
-  desc: "to change lastseen privacy",
-  type: "privacy"
+  desc: 'to change lastseen privacy',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change last seen privacy settings_`);
-  const available_privacy = ["all", "contacts", "contact_blacklist", "none"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'contacts', 'contact_blacklist', 'none'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateLastSeenPrivacy(match);
   await message.send(`_Privacy settings *last seen* Updated to *${match}*_`);
  }
@@ -409,15 +409,15 @@ Module(
 
 Module(
  {
-  pattern: "online ?(.*)",
+  pattern: 'online ?(.*)',
   fromMe: true,
-  desc: "to change online privacy",
-  type: "privacy"
+  desc: 'to change online privacy',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *online*  privacy settings_`);
-  const available_privacy = ["all", "match_last_seen"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'match_last_seen'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateOnlinePrivacy(match);
   await message.send(`_Privacy Updated to *${match}*_`);
  }
@@ -425,15 +425,15 @@ Module(
 
 Module(
  {
-  pattern: "mypp ?(.*)",
+  pattern: 'mypp ?(.*)',
   fromMe: true,
-  desc: "privacy setting profile picture",
-  type: "privacy"
+  desc: 'privacy setting profile picture',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *profile picture*  privacy settings_`);
-  const available_privacy = ["all", "contacts", "contact_blacklist", "none"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'contacts', 'contact_blacklist', 'none'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateProfilePicturePrivacy(match);
   await message.send(`_Privacy Updated to *${match}*_`);
  }
@@ -441,15 +441,15 @@ Module(
 
 Module(
  {
-  pattern: "mystatus ?(.*)",
+  pattern: 'mystatus ?(.*)',
   fromMe: true,
-  desc: "privacy for my status",
-  type: "privacy"
+  desc: 'privacy for my status',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *status*  privacy settings_`);
-  const available_privacy = ["all", "contacts", "contact_blacklist", "none"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'contacts', 'contact_blacklist', 'none'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateStatusPrivacy(match);
   await message.send(`_Privacy Updated to *${match}*_`);
  }
@@ -457,15 +457,15 @@ Module(
 
 Module(
  {
-  pattern: "read ?(.*)",
+  pattern: 'read ?(.*)',
   fromMe: true,
-  desc: "privacy for read message",
-  type: "privacy"
+  desc: 'privacy for read message',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *read and receipts message*  privacy settings_`);
-  const available_privacy = ["all", "none"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'none'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateReadReceiptsPrivacy(match);
   await message.send(`_Privacy Updated to *${match}*_`);
  }
@@ -473,15 +473,15 @@ Module(
 
 Module(
  {
-  pattern: "groupadd ?(.*)",
+  pattern: 'groupadd ?(.*)',
   fromMe: true,
-  desc: "privacy for group add",
-  type: "privacy"
+  desc: 'privacy for group add',
+  type: 'privacy'
  },
  async (message, match, m, client) => {
   if (!match) return await message.send(`_*Example:-* ${message.prefix} all_\n_to change *group add*  privacy settings_`);
-  const available_privacy = ["all", "contacts", "contact_blacklist", "none"];
-  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join("/")}* values_`);
+  const available_privacy = ['all', 'contacts', 'contact_blacklist', 'none'];
+  if (!available_privacy.includes(match)) return await message.send(`_action must be *${available_privacy.join('/')}* values_`);
   await client.updateGroupsAddPrivacy(match);
   await message.send(`_Privacy Updated to *${match}*_`);
  }
