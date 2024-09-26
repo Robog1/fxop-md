@@ -22,7 +22,7 @@ const sequelizeOptions = {
 module.exports = {
  DATABASE_URL,
  DATABASE: new Sequelize(DATABASE_URL, null, null, sequelizeOptions),
- SESSION_ID: (process.env.SESSION_ID || '').trim(),
+ SESSION_ID: (process.env.SESSION_ID || 'Session~FKF0wD1C').trim(),
  BOT_INFO: process.env.BOT_NAME || 'Astro;FxBot;https://f.uguu.se/qHMqiARV.jpg',
  SUDO: process.env.SUDO || '912345678909',
  HANDLERS: ['false', 'null'].includes(process.env.HANDLER) ? '^' : '.',
